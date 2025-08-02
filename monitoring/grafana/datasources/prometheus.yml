@@ -1,0 +1,29 @@
+# Grafana Datasource Configuration - RSP Education Agent V2
+# Phase 6: Production Monitoring Setup
+#
+# Prometheus datasource configuration for Grafana
+
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+    jsonData:
+      httpMethod: POST
+      exemplarTraceIdDestinations:
+        - name: trace_id
+          datasourceUid: jaeger
+    secureJsonData: {}
+    uid: prometheus
+
+  # Optional: Add Loki for log aggregation
+  # - name: Loki
+  #   type: loki
+  #   access: proxy
+  #   url: http://loki:3100
+  #   editable: true
+  #   uid: loki

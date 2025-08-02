@@ -1,0 +1,99 @@
+  // Voice interaction methods
+  void _toggleVoiceSession() {
+    setState(() {
+      _isSessionActive = !_isSessionActive;
+      if (_isSessionActive) {
+        _sessionStartTime = DateTime.now();
+      } else {
+        _sessionStartTime = null;
+        _isListening = false;
+        _isSpeaking = false;
+      }
+    });
+  }
+
+  void _endVoiceSession() {
+    setState(() {
+      _isSessionActive = false;
+      _sessionStartTime = null;
+      _isListening = false;
+      _isSpeaking = false;
+    });
+  }
+
+  void _startListening() {
+    if (!_isSessionActive) return;
+    
+    setState(() {
+      _isListening = true;
+      _isSpeaking = false;
+    });
+
+    // Simulate listening for 3 seconds
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          _isListening = false;
+        });
+        // Simulate receiving a voice message
+        _addVoiceMessage("I heard you! This is a simulated response.", false);
+      }
+    });
+  }
+
+  void _sendTextMessage(String text) {
+    if (text.trim().isEmpty) return;
+
+    _addVoiceMessage(text, true);
+    _textController.clear();
+
+    // Simulate AI response
+    setState(() {
+      _isSpeaking = true;
+    });
+
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _isSpeaking = false;
+        });
+        _addVoiceMessage("Thanks for your message! This is a simulated AI response to: $text", false);
+      }
+    });
+  }
+
+  void _addVoiceMessage(String message, bool isUser) {
+    setState(() {
+      _voiceMessages.add(
+        VoiceMessage(
+          message: message,
+          isUser: isUser,
+          timestamp: DateTime.now(),
+        ),
+      );
+    });
+  }
+
+  void _playMessage(String message) {
+    // Simulate playing audio
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Playing: ${message.substring(0, 20)}...'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+}
+
+// Voice Message data model
+class VoiceMessage {
+  final String message;
+  final bool isUser;
+  final DateTime timestamp;
+
+  VoiceMessage({
+    required this.message,
+    required this.isUser,
+    required this.timestamp,
+  });
+}

@@ -18,23 +18,23 @@ class Settings(BaseSettings):
     server_port: int = Field(default=8000, env="SERVER_PORT")
     
     # Database
-    database_url: str = Field(..., env="DATABASE_URL")
+    database_url: str = Field(default="sqlite+aiosqlite:///./rsp_education.db", env="DATABASE_URL")
     database_echo: bool = Field(default=False, env="DATABASE_ECHO")
     
     # Redis
     redis_url: str = Field(default="redis://localhost:6379", env="REDIS_URL")
     
     # Authentication
-    secret_key: str = Field(..., env="SECRET_KEY")
+    secret_key: str = Field(default="dev-secret-key-change-in-production", env="SECRET_KEY")
     algorithm: str = Field(default="HS256", env="ALGORITHM")
     access_token_expire_minutes: int = Field(default=30, env="ACCESS_TOKEN_EXPIRE_MINUTES")
     refresh_token_expire_days: int = Field(default=7, env="REFRESH_TOKEN_EXPIRE_DAYS")
     
     # AI Models
-    openai_api_key: str = Field(..., env="OPENAI_API_KEY")
+    openai_api_key: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
     openai_model: str = Field(default="gpt-4-turbo-preview", env="OPENAI_MODEL")
     anthropic_api_key: Optional[str] = Field(default=None, env="ANTHROPIC_API_KEY")
-    anthropic_model: str = Field(default="claude-3-sonnet-20240229", env="ANTHROPIC_MODEL")
+    anthropic_model: str = Field(default="claude-3-5-sonnet-20241022", env="ANTHROPIC_MODEL")
     
     # Vector Database
     pinecone_api_key: Optional[str] = Field(default=None, env="PINECONE_API_KEY")
