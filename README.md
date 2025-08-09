@@ -53,54 +53,58 @@ An intelligent Android tutoring application powered by **Agentic AI** for person
 
 ## 🚀 **Quick Start**
 
-### **Prerequisites**
+### **Option 1: Docker Setup (Recommended - Easiest)**
+
+**Prerequisites**: Only Docker Desktop is required!
+
+```bash
+# 1. Clone the repository
+git clone <your-repo-url>
+cd RSP_Education_App_V2
+
+# 2. Setup environment
+cp .env.example .env
+# Edit .env and add your OpenAI API key
+
+# 3. Start everything with one command
+make quick-start
+
+# Or use Docker Compose directly:
+docker-compose up -d
+```
+
+**That's it!** 🎉 The complete application is now running:
+- **Frontend (Student/Parent UI)**: http://localhost:3000
+- **Backend API**: http://localhost:8000  
+- **API Documentation**: http://localhost:8000/docs
+- **Database Admin**: http://localhost:8080
+
+📚 **Detailed Docker Guide**: See [DOCKER_SETUP.md](DOCKER_SETUP.md) for complete instructions.
+
+### **Option 2: Manual Setup (Advanced)**
+
+**Prerequisites**:
 - Python 3.9+
 - Flutter SDK 3.0+
-- Node.js 16+ (for development tools)
+- PostgreSQL
+- Redis
 - OpenAI API Key
-- Anthropic API Key (optional)
-
-### **Backend Setup**
 
 ```bash
-# Navigate to backend directory
+# Backend Setup
 cd backend/
-
-# Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Configure environment variables
 cp .env.example .env
-# Edit .env with your API keys
-
-# Initialize database
-python -m alembic upgrade head
-
-# Start backend server
+# Edit .env with your API keys and database settings
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
 
-### **Frontend Setup**
-
-```bash
-# Navigate to frontend directory
+# Frontend Setup (in new terminal)
 cd frontend/
-
-# Install Flutter dependencies
 flutter pub get
-
-# Run web application
 flutter run -d chrome --web-port 3000
 ```
-
-### **Access the Application**
-- **Backend API**: http://127.0.0.1:8000
-- **Frontend App**: http://127.0.0.1:3000
-- **API Documentation**: http://127.0.0.1:8000/docs
 
 ## 📋 **Environment Configuration**
 

@@ -1,0 +1,88 @@
+version: '3.8'
+
+# Development override for docker-compose.yml
+# Use: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  # Backend with development settings
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: development  # If we had multi-stage build
+    environment:
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+      - RELOAD=true
+    volumes:
+      # Mount source code for hot reload
+      - ./backend:/app:cached
+      - /app/__pycache__  # Exclude cache
+      - /app/.pytest_cache
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    ports:
+      - "8000:8000"
+      - "5678:5678"  # For debugging
+
+  # Frontend with development settings  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app:cached
+      - /app/.dart_tool
+      - /app/build
+    ports:
+      - "3000:3000"
+    environment:
+      - FLUTTER_WEB_PORT=3000
+      - FLUTTER_WEB_HOSTNAME=0.0.0.0
+    command: ["flutter", "run", "-d", "web-server", "--web-port=3000", "--web-hostname=0.0.0.0"]
+
+  # Database with development extensions
+  database:
+    ports:
+      - "5432:5432"  # Expose for external connections
+    environment:
+      - POSTGRES_DB=rsp_education_dev
+      - POSTGRES_USER=dev_user
+      - POSTGRES_PASSWORD=dev_password
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./database/dev-init:/docker-entrypoint-initdb.d
+
+  # Redis with development settings
+  redis:
+    ports:
+      - "6379:6379"  # Expose for external connections
+    command: redis-server --appendonly yes --notify-keyspace-events Ex
+
+  # Additional development services
+  adminer:
+    image: adminer:latest
+    container_name: rsp_education_adminer
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=database
+    depends_on:
+      - database
+    networks:
+      - rsp_network
+
+  # Redis GUI
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: rsp_education_redis_gui
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    networks:
+      - rsp_network
+
+volumes:
+  postgres_dev_data:

@@ -1,0 +1,30 @@
+# Development Dockerfile for Flutter Web
+FROM cirrusci/flutter:3.16.0
+
+# Set work directory
+WORKDIR /app
+
+# Install additional tools for development
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy pubspec files
+COPY pubspec.yaml pubspec.lock ./
+
+# Get dependencies
+RUN flutter pub get
+
+# Enable web support
+RUN flutter config --enable-web
+
+# Copy the rest of the application
+COPY . .
+
+# Expose port for development server
+EXPOSE 3000
+
+# Run in development mode with hot reload
+CMD ["flutter", "run", "-d", "web-server", "--web-port=3000", "--web-hostname=0.0.0.0", "--dart-entrypoint-args=--hot-reload"]

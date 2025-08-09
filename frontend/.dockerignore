@@ -1,0 +1,59 @@
+# Flutter/Dart
+.dart_tool/
+.packages
+build/
+ios/
+android/
+macos/
+windows/
+linux/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Files and directories created by pub
+.pub/
+.pub-cache/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Git
+.git
+.gitignore
+README.md
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Documentation
+docs/
+*.md
+
+# Test coverage
+coverage/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
