@@ -49,11 +49,13 @@ async def create_tables():
     try:
         logger.info("Creating database tables...")
         
+        # Import all models to ensure they're registered with metadata
+        from database.models import (
+            Student, LearningProfile, Content, Assessment, AssessmentResult,
+            LearningSession, SessionActivity, VoiceInteraction, SystemMetrics, UserSession
+        )
+        
         async with engine.begin() as conn:
-            # Import all models here to ensure they're registered
-            # TODO: Import model modules when they're created
-            # from models import user, content, assessment, etc.
-            
             await conn.run_sync(Base.metadata.create_all)
         
         logger.info("Database tables created successfully")

@@ -57,6 +57,12 @@ class ContentRequest(BaseModel):
     difficulty: DifficultyLevel = Field(default=DifficultyLevel.INTERMEDIATE)
     student_context: Optional[Dict[str, Any]] = Field(default=None, description="Student's learning context")
     learning_objectives: Optional[List[str]] = Field(default=None, description="Specific learning objectives")
+    
+    # Optional fields added by API endpoint for user context
+    student_id: Optional[str] = Field(default=None, description="Student ID from authentication")
+    student_grade: Optional[str] = Field(default=None, description="Student's current grade")
+    preferred_language: Optional[str] = Field(default=None, description="Student's preferred language")
+    learning_style: Optional[str] = Field(default=None, description="Student's learning style")
 
 
 class QuestionRequest(BaseModel):
@@ -108,6 +114,7 @@ class ContentGeneratorAgent:
     def __init__(self):
         self.logger = logging.getLogger(f"{__name__}.ContentGeneratorAgent")
         self.curriculum = CBSECurriculum()
+        self.openai_client = None
         self.openai_model = None
         self.anthropic_model = None
         self._initialize_models()
@@ -118,8 +125,9 @@ class ContentGeneratorAgent:
             # Initialize OpenAI client if valid API key is available
             if (hasattr(settings, 'openai_api_key') and settings.openai_api_key and 
                 settings.openai_api_key != "test-key" and settings.openai_api_key.startswith("sk-")):
-                openai.api_key = settings.openai_api_key
-                self.openai_model = "gpt-4-turbo-preview"  # Store model name for now
+                from openai import OpenAI
+                self.openai_client = OpenAI(api_key=settings.openai_api_key)
+                self.openai_model = settings.openai_model  # Use model from settings
                 self.logger.info("OpenAI model initialized")
                 
             # Initialize Anthropic client if valid API key is available  
@@ -309,7 +317,7 @@ Students can practice this concept through various exercises and activities.
                 settings.anthropic_api_key.startswith("sk-ant-")):
                 self.logger.info("Using Anthropic API for content generation")
                 return await self._generate_with_anthropic(request, curriculum_data)
-            elif (self.openai_model and hasattr(settings, 'openai_api_key') and 
+            elif (self.openai_client and hasattr(settings, 'openai_api_key') and 
                   settings.openai_api_key and 
                   settings.openai_api_key != "test-key" and
                   settings.openai_api_key.startswith("sk-")):
@@ -382,7 +390,7 @@ Interactive exercises and activities to reinforce learning.
                 settings.anthropic_api_key.startswith("sk-ant-")):
                 self.logger.info("Using Anthropic API for question generation")
                 return await self._generate_questions_with_anthropic(request, curriculum_data)
-            elif (self.openai_model and hasattr(settings, 'openai_api_key') and 
+            elif (self.openai_client and hasattr(settings, 'openai_api_key') and 
                   settings.openai_api_key and 
                   settings.openai_api_key != "test-key" and
                   settings.openai_api_key.startswith("sk-")):
@@ -396,7 +404,7 @@ Interactive exercises and activities to reinforce learning.
             self.logger.error(f"AI question generation failed, falling back to test mode: {e}")
             return await self._generate_test_questions(request, curriculum_data)
 
-    async def _generate_test_questions(self, request: QuestionRequest, curriculum_data: Dict) -> List[Dict]:
+    async def _generate_test_questions(self, request: QuestionRequest, curriculum_data: Dict) -> List[GeneratedQuestion]:
         """Generate test questions when AI models are not available"""
         
         self.logger.info(f"Generating {request.num_questions} questions in test mode")
@@ -405,36 +413,46 @@ Interactive exercises and activities to reinforce learning.
         questions = []
         
         for i in range(request.num_questions):
-            question_data = {
-                "question": f"Test Question {i+1} for {request.topic} (Grade {request.grade} {request.subject})",
-                "correct_answer": f"Test Answer {i+1}",
-                "explanation": f"This is a test explanation for Question {i+1} about {request.topic}. The answer demonstrates understanding of key concepts in {request.subject}.",
-                "learning_objective": f"Understand and apply {request.topic} concepts"
-            }
-            
             # Add options for MCQ
+            options = None
             if request.question_type == QuestionType.MCQ:
-                question_data["options"] = [
+                options = [
                     f"Test Answer {i+1}",  # Correct answer
                     f"Incorrect Option A for Q{i+1}", 
                     f"Incorrect Option B for Q{i+1}",
                     f"Incorrect Option C for Q{i+1}"
                 ]
             
-            questions.append(question_data)
+            question = GeneratedQuestion(
+                question=f"Test Question {i+1} for {request.topic} (Grade {request.grade} {request.subject})",
+                question_type=request.question_type,
+                options=options,
+                correct_answer=f"Test Answer {i+1}",
+                explanation=f"This is a test explanation for Question {i+1} about {request.topic}. The answer demonstrates understanding of key concepts in {request.subject}.",
+                difficulty=request.difficulty,
+                subject=request.subject,
+                grade=request.grade,
+                topic=request.topic,
+                learning_objective=f"Understand and apply {request.topic} concepts",
+                estimated_time=5,
+                generated_at=datetime.utcnow(),
+                metadata={"test_mode": True, "question_index": i+1}
+            )
+            
+            questions.append(question)
         
         return questions
 
-    async def _generate_questions_with_openai(self, request: QuestionRequest, curriculum_data: Dict) -> List[Dict]:
+    async def _generate_questions_with_openai(self, request: QuestionRequest, curriculum_data: Dict) -> List[GeneratedQuestion]:
         """Generate questions using OpenAI API"""
         try:
-            import openai
-            openai.api_key = settings.openai_api_key
+            from openai import AsyncOpenAI
+            client = AsyncOpenAI(api_key=settings.openai_api_key)
             
             prompt = self._create_question_prompt(request, curriculum_data)
             system_prompt = self._get_question_system_prompt(request.question_type)
             
-            response = await openai.ChatCompletion.acreate(
+            response = await client.chat.completions.create(
                 model=settings.openai_model,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -454,7 +472,7 @@ Interactive exercises and activities to reinforce learning.
             self.logger.error(f"OpenAI question generation failed: {e}")
             raise
 
-    async def _generate_questions_with_anthropic(self, request: QuestionRequest, curriculum_data: Dict) -> List[Dict]:
+    async def _generate_questions_with_anthropic(self, request: QuestionRequest, curriculum_data: Dict) -> List[GeneratedQuestion]:
         """Generate questions using Anthropic API"""
         try:
             client = Anthropic(api_key=settings.anthropic_api_key)
@@ -485,13 +503,13 @@ Interactive exercises and activities to reinforce learning.
     async def _generate_with_openai(self, request: ContentRequest, curriculum_data: Dict) -> Dict[str, Any]:
         """Generate content using OpenAI API"""
         try:
-            import openai
-            openai.api_key = settings.openai_api_key
+            from openai import AsyncOpenAI
+            client = AsyncOpenAI(api_key=settings.openai_api_key)
             
             prompt = self._create_content_prompt(request, curriculum_data)
             system_prompt = self._get_content_system_prompt(request.content_type)
             
-            response = await openai.ChatCompletion.acreate(
+            response = await client.chat.completions.create(
                 model=settings.openai_model,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -642,14 +660,27 @@ Structure the explanation with:
     def _get_content_system_prompt(self, content_type: ContentType) -> str:
         """Get system prompt for content generation"""
         
-        prompts = {
+        base_prompts = {
             ContentType.EXPLANATION: "You are an expert CBSE curriculum tutor who creates clear, comprehensive explanations that help students understand complex concepts through examples and step-by-step breakdowns.",
             ContentType.EXAMPLE: "You are a skilled educator who creates relevant, practical examples that demonstrate theoretical concepts in real-world contexts, making learning engaging for CBSE students.",
             ContentType.EXERCISE: "You are an experienced teacher who designs practice exercises that reinforce learning objectives and help students apply concepts they've learned.",
             ContentType.ASSESSMENT: "You are a curriculum specialist who creates fair, comprehensive assessments that accurately measure student understanding according to CBSE standards."
         }
         
-        return prompts.get(content_type, "You are an expert CBSE curriculum tutor.")
+        base_prompt = base_prompts.get(content_type, "You are an expert CBSE curriculum tutor.")
+        
+        # Add JSON formatting instruction
+        json_instruction = """
+
+CRITICAL: You must respond ONLY with valid JSON in this exact format (no additional text):
+{
+  "text": "Your educational content here...",
+  "learning_objectives": ["objective 1", "objective 2", "objective 3"],
+  "estimated_time": 15,
+  "prerequisites": ["prerequisite 1", "prerequisite 2"]
+}"""
+        
+        return base_prompt + json_instruction
 
     def _get_question_system_prompt(self, question_type: QuestionType) -> str:
         """Get system prompt for question generation"""
@@ -665,25 +696,48 @@ Structure the explanation with:
         return prompts.get(question_type, "You are an expert question writer for educational assessments.")
 
     def _parse_content_response(self, response: str, request: ContentRequest) -> Dict[str, Any]:
-        """Parse AI response for content generation"""
+        """Parse AI response for content generation with improved error handling"""
         try:
             import json
-            # Try to parse as JSON first
-            if response.strip().startswith('{'):
-                return json.loads(response)
+            import re
             
-            # Fallback: create structure from text response
+            # Clean the response by removing control characters and fixing common issues
+            cleaned_response = response.strip()
+            
+            # Remove control characters that break JSON parsing
+            cleaned_response = re.sub(r'[\x00-\x1F\x7F]', ' ', cleaned_response)
+            
+            # Try to parse as JSON first
+            if cleaned_response.startswith('{'):
+                parsed = json.loads(cleaned_response)
+                
+                # Validate and ensure all required fields exist
+                if isinstance(parsed, dict):
+                    # Ensure required fields
+                    if 'text' not in parsed:
+                        parsed['text'] = cleaned_response
+                    if 'learning_objectives' not in parsed:
+                        parsed['learning_objectives'] = request.learning_objectives or [f"Understand {request.topic} concepts"]
+                    if 'estimated_time' not in parsed:
+                        parsed['estimated_time'] = 15
+                    if 'prerequisites' not in parsed:
+                        parsed['prerequisites'] = [f"Basic {request.subject} knowledge"]
+                    
+                    return parsed
+            
+            # If not JSON or parsing failed, create structure from text
             return {
-                "text": response,
+                "text": cleaned_response,
                 "learning_objectives": request.learning_objectives or [f"Understand {request.topic} concepts"],
-                "estimated_time": 15,  # Default estimate
+                "estimated_time": 15,
                 "prerequisites": [f"Basic {request.subject} knowledge"]
             }
             
         except Exception as e:
             self.logger.warning(f"Failed to parse structured response, using fallback: {e}")
+            # Last resort fallback
             return {
-                "text": response,
+                "text": response,  # Use original response as fallback
                 "learning_objectives": [f"Understand {request.topic} concepts"],
                 "estimated_time": 15,
                 "prerequisites": [f"Basic {request.subject} knowledge"]

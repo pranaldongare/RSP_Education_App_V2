@@ -25,7 +25,7 @@ class DatabaseConfig:
     # Database URL (supports SQLite, PostgreSQL, MySQL)
     DATABASE_URL = os.getenv(
         "DATABASE_URL", 
-        "sqlite:///./rsp_education.db"
+        "sqlite:///./rsp_education_fresh.db"
     )
     
     # Connection pool settings

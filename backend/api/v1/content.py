@@ -219,6 +219,18 @@ async def get_curriculum_topics(
         )
 
 
+@router.get("/subjects")
+async def get_curriculum_subjects():
+    """
+    Get available curriculum subjects
+    """
+    return {
+        "subjects": ["mathematics", "science", "english", "social_studies"],
+        "grades": [1, 2, 3, 4, 5],
+        "total_subjects": 4
+    }
+
+
 @router.get("/curriculum/search")
 async def search_curriculum(
     query: str,

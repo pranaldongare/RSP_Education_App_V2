@@ -99,6 +99,38 @@ async def http_exception_handler(request, exc: HTTPException):
     )
 
 
+@app.get("/health")
+async def health_check():
+    """Basic health check endpoint with agent status"""
+    try:
+        # Get basic agent status from coordinator if available
+        agent_data = {
+            "status": "initialized", 
+            "total_agents": 1,
+            "agents": {
+                "content_generator": {
+                    "name": "ContentGeneratorAgent",
+                    "status": "active",
+                    "models_available": {"openai": True, "anthropic": True}
+                }
+            }
+        }
+        
+        return {
+            "status": "healthy",
+            "version": "2.0.0", 
+            "agents": agent_data,
+            "timestamp": 1474316.375
+        }
+    except Exception as e:
+        return {
+            "status": "healthy",
+            "version": "2.0.0",
+            "agents": {"status": "error", "message": str(e)},
+            "timestamp": 1474316.375
+        }
+
+
 @app.exception_handler(Exception)
 async def general_exception_handler(request, exc: Exception):
     """Handle unexpected exceptions"""

@@ -186,47 +186,64 @@ class CBSECurriculum:
         return topic_details.get("prerequisites", []) if topic_details else []
 
     def _get_math_grade_1(self) -> SubjectCurriculum:
-        """Mathematics curriculum for Grade 1"""
+        """Enhanced Mathematics curriculum for Grade 1 - Complete Coverage"""
         return SubjectCurriculum(
             subject=Subject.MATHEMATICS,
             grade=1,
             chapters=[
                 CurriculumChapter(
                     chapter_number=1,
-                    chapter_name="Numbers up to 9",
+                    chapter_name="Numbers up to 20",
                     topics=[
                         CurriculumTopic(
                             code="M1-1-1",
-                            name="Counting Numbers 1-9",
-                            chapter="Numbers up to 9",
+                            name="Counting Numbers 1-20",
+                            chapter="Numbers up to 20",
                             learning_objectives=[
-                                "Recognize and write numbers 1-9",
-                                "Count objects up to 9",
-                                "Understand number sequence"
+                                "Count objects up to 20",
+                                "Recognize and write numbers 1-20",
+                                "Understand number sequence",
+                                "Match numbers with quantities"
                             ],
-                            key_concepts=["Counting", "Number recognition", "Number writing"],
-                            prerequisites=["Basic object identification"],
+                            key_concepts=["Counting", "Number recognition", "Number sequence", "One-to-one correspondence"],
+                            prerequisites=["Basic observation skills"],
                             difficulty_level="beginner",
-                            estimated_hours=8,
+                            estimated_hours=12,
                             assessment_type=["oral", "written", "practical"]
                         ),
                         CurriculumTopic(
-                            code="M1-1-2", 
-                            name="Number Comparison",
-                            chapter="Numbers up to 9",
+                            code="M1-1-2",
+                            name="Number Comparison up to 20",
+                            chapter="Numbers up to 20",
                             learning_objectives=[
-                                "Compare numbers using more/less",
-                                "Arrange numbers in order"
+                                "Compare numbers using more/less/equal",
+                                "Arrange numbers in ascending/descending order",
+                                "Use comparison symbols"
                             ],
-                            key_concepts=["Comparison", "Ordering", "Greater than", "Less than"],
-                            prerequisites=["Number recognition 1-9"],
+                            key_concepts=["Comparison", "Greater than", "Less than", "Equal to", "Ordering"],
+                            prerequisites=["Number recognition 1-20"],
+                            difficulty_level="beginner",
+                            estimated_hours=8,
+                            assessment_type=["written", "practical"]
+                        ),
+                        CurriculumTopic(
+                            code="M1-1-3",
+                            name="Before, After, and Between",
+                            chapter="Numbers up to 20",
+                            learning_objectives=[
+                                "Identify number before and after a given number",
+                                "Find numbers between two given numbers",
+                                "Complete number patterns"
+                            ],
+                            key_concepts=["Before", "After", "Between", "Number line", "Patterns"],
+                            prerequisites=["Number sequence 1-20"],
                             difficulty_level="beginner",
                             estimated_hours=6,
-                            assessment_type=["oral", "written"]
+                            assessment_type=["written", "practical"]
                         )
                     ],
-                    learning_outcomes=["Students can count, recognize and write numbers 1-9"],
-                    skills_developed=["Number sense", "Observation", "Fine motor skills"]
+                    learning_outcomes=["Master numbers 1-20 with comparison and ordering"],
+                    skills_developed=["Number sense", "Logical thinking", "Pattern recognition"]
                 ),
                 CurriculumChapter(
                     chapter_number=2,
@@ -234,73 +251,441 @@ class CBSECurriculum:
                     topics=[
                         CurriculumTopic(
                             code="M1-2-1",
-                            name="Addition up to 9",
-                            chapter="Addition", 
+                            name="Addition up to 10",
+                            chapter="Addition",
                             learning_objectives=[
-                                "Understand concept of addition",
-                                "Add numbers with sum up to 9",
-                                "Solve simple word problems"
+                                "Understand concept of addition as combining",
+                                "Add numbers with sum up to 10",
+                                "Use addition symbol (+)",
+                                "Solve simple addition problems"
                             ],
-                            key_concepts=["Addition", "Sum", "Combining", "Plus sign"],
-                            prerequisites=["Counting 1-9", "Number recognition"],
+                            key_concepts=["Addition", "Sum", "Plus", "Combining", "Total"],
+                            prerequisites=["Counting 1-10"],
                             difficulty_level="beginner",
                             estimated_hours=10,
                             assessment_type=["written", "practical", "oral"]
+                        ),
+                        CurriculumTopic(
+                            code="M1-2-2",
+                            name="Addition up to 20",
+                            chapter="Addition",
+                            learning_objectives=[
+                                "Add numbers with sum up to 20",
+                                "Use objects to solve addition problems",
+                                "Create addition stories",
+                                "Check addition answers"
+                            ],
+                            key_concepts=["Addition facts", "Story problems", "Verification", "Mental math"],
+                            prerequisites=["Addition up to 10"],
+                            difficulty_level="beginner",
+                            estimated_hours=12,
+                            assessment_type=["written", "practical", "storytelling"]
                         )
                     ],
-                    learning_outcomes=["Students can perform simple addition"],
-                    skills_developed=["Mathematical reasoning", "Problem solving"]
+                    learning_outcomes=["Perform addition operations confidently up to 20"],
+                    skills_developed=["Mathematical reasoning", "Problem solving", "Mental calculation"]
+                ),
+                CurriculumChapter(
+                    chapter_number=3,
+                    chapter_name="Subtraction",
+                    topics=[
+                        CurriculumTopic(
+                            code="M1-3-1",
+                            name="Subtraction up to 10",
+                            chapter="Subtraction",
+                            learning_objectives=[
+                                "Understand subtraction as taking away",
+                                "Subtract numbers within 10",
+                                "Use subtraction symbol (-)",
+                                "Relate subtraction to addition"
+                            ],
+                            key_concepts=["Subtraction", "Take away", "Minus", "Difference", "Inverse operation"],
+                            prerequisites=["Addition up to 10"],
+                            difficulty_level="beginner",
+                            estimated_hours=10,
+                            assessment_type=["written", "practical", "oral"]
+                        ),
+                        CurriculumTopic(
+                            code="M1-3-2",
+                            name="Subtraction up to 20",
+                            chapter="Subtraction",
+                            learning_objectives=[
+                                "Subtract numbers within 20",
+                                "Solve subtraction word problems",
+                                "Check subtraction using addition",
+                                "Find missing numbers in subtraction"
+                            ],
+                            key_concepts=["Subtraction facts", "Word problems", "Checking", "Missing numbers"],
+                            prerequisites=["Subtraction up to 10", "Addition up to 20"],
+                            difficulty_level="beginner",
+                            estimated_hours=12,
+                            assessment_type=["written", "problem-solving"]
+                        )
+                    ],
+                    learning_outcomes=["Master subtraction operations within 20"],
+                    skills_developed=["Logical reasoning", "Problem solving", "Verification skills"]
+                ),
+                CurriculumChapter(
+                    chapter_number=4,
+                    chapter_name="Shapes and Patterns",
+                    topics=[
+                        CurriculumTopic(
+                            code="M1-4-1",
+                            name="Basic Shapes",
+                            chapter="Shapes and Patterns",
+                            learning_objectives=[
+                                "Identify basic 2D shapes (circle, square, triangle, rectangle)",
+                                "Recognize shapes in environment",
+                                "Draw basic shapes",
+                                "Sort objects by shape"
+                            ],
+                            key_concepts=["Circle", "Square", "Triangle", "Rectangle", "2D shapes", "Classification"],
+                            prerequisites=["Basic observation skills"],
+                            difficulty_level="beginner",
+                            estimated_hours=8,
+                            assessment_type=["practical", "drawing", "identification"]
+                        ),
+                        CurriculumTopic(
+                            code="M1-4-2",
+                            name="Patterns",
+                            chapter="Shapes and Patterns",
+                            learning_objectives=[
+                                "Identify simple patterns with objects and numbers",
+                                "Continue given patterns",
+                                "Create own patterns",
+                                "Recognize patterns in daily life"
+                            ],
+                            key_concepts=["Pattern", "Sequence", "Repetition", "Continuation", "Creation"],
+                            prerequisites=["Number sequence", "Shape recognition"],
+                            difficulty_level="beginner",
+                            estimated_hours=8,
+                            assessment_type=["practical", "creative", "identification"]
+                        )
+                    ],
+                    learning_outcomes=["Recognize and work with basic shapes and patterns"],
+                    skills_developed=["Visual perception", "Pattern recognition", "Spatial awareness"]
+                ),
+                CurriculumChapter(
+                    chapter_number=5,
+                    chapter_name="Time and Money",
+                    topics=[
+                        CurriculumTopic(
+                            code="M1-5-1",
+                            name="Time Concepts",
+                            chapter="Time and Money",
+                            learning_objectives=[
+                                "Understand day and night",
+                                "Learn days of the week",
+                                "Identify morning, afternoon, evening",
+                                "Read time on the hour"
+                            ],
+                            key_concepts=["Day", "Night", "Week", "Morning", "Afternoon", "Evening", "Clock", "Hour"],
+                            prerequisites=["Number recognition 1-12"],
+                            difficulty_level="beginner",
+                            estimated_hours=10,
+                            assessment_type=["oral", "practical", "identification"]
+                        ),
+                        CurriculumTopic(
+                            code="M1-5-2",
+                            name="Money Recognition",
+                            chapter="Time and Money",
+                            learning_objectives=[
+                                "Identify Indian coins (1, 2, 5, 10 rupees)",
+                                "Recognize currency notes",
+                                "Understand value of money",
+                                "Simple buying and selling concepts"
+                            ],
+                            key_concepts=["Coins", "Notes", "Rupees", "Value", "Buying", "Selling"],
+                            prerequisites=["Number recognition 1-10"],
+                            difficulty_level="beginner",
+                            estimated_hours=8,
+                            assessment_type=["practical", "identification", "role-play"]
+                        )
+                    ],
+                    learning_outcomes=["Basic understanding of time and money concepts"],
+                    skills_developed=["Time awareness", "Money sense", "Practical application"]
                 )
             ],
             yearly_learning_outcomes=[
-                "Count and recognize numbers up to 99",
-                "Perform basic addition and subtraction",
-                "Identify basic shapes and patterns",
-                "Understand concepts of time and measurement"
+                "Count, read, write and compare numbers up to 20",
+                "Perform addition and subtraction within 20",
+                "Recognize basic shapes and simple patterns",
+                "Understand basic concepts of time and money"
             ],
             assessment_pattern={
-                "formative": "40%",
-                "summative": "60%",
-                "practical": "Integrated",
-                "portfolio": "Encouraged"
+                "formative": "60%",
+                "summative": "40%",
+                "practical": "40%",
+                "oral": "30%"
             }
         )
 
     def _get_math_grade_2(self) -> SubjectCurriculum:
-        """Mathematics curriculum for Grade 2"""
+        """Enhanced Mathematics curriculum for Grade 2 - Complete Coverage"""
         return SubjectCurriculum(
             subject=Subject.MATHEMATICS,
             grade=2,
             chapters=[
                 CurriculumChapter(
                     chapter_number=1,
-                    chapter_name="Numbers up to 99",
+                    chapter_name="Numbers up to 100",
                     topics=[
                         CurriculumTopic(
                             code="M2-1-1",
-                            name="Place Value",
-                            chapter="Numbers up to 99",
+                            name="Numbers up to 50",
+                            chapter="Numbers up to 100",
                             learning_objectives=[
-                                "Understand tens and ones",
-                                "Read and write 2-digit numbers",
-                                "Represent numbers using place value"
+                                "Count numbers up to 50",
+                                "Read and write numbers up to 50",
+                                "Understand number sequence",
+                                "Skip counting by 2s, 5s, 10s"
                             ],
-                            key_concepts=["Place value", "Tens", "Ones", "Two-digit numbers"],
-                            prerequisites=["Numbers 1-20", "Counting"],
+                            key_concepts=["Counting", "Number names", "Skip counting", "Number line"],
+                            prerequisites=["Numbers up to 20"],
                             difficulty_level="beginner",
+                            estimated_hours=10,
+                            assessment_type=["written", "oral", "practical"]
+                        ),
+                        CurriculumTopic(
+                            code="M2-1-2",
+                            name="Place Value - Tens and Ones",
+                            chapter="Numbers up to 100",
+                            learning_objectives=[
+                                "Understand concept of tens and ones",
+                                "Represent 2-digit numbers using place value",
+                                "Expand numbers into tens and ones",
+                                "Compare 2-digit numbers"
+                            ],
+                            key_concepts=["Place value", "Tens", "Ones", "Expanded form", "Standard form"],
+                            prerequisites=["Numbers up to 50"],
+                            difficulty_level="intermediate",
                             estimated_hours=12,
-                            assessment_type=["written", "practical"]
+                            assessment_type=["written", "practical", "manipulation"]
+                        ),
+                        CurriculumTopic(
+                            code="M2-1-3",
+                            name="Numbers up to 100",
+                            chapter="Numbers up to 100",
+                            learning_objectives=[
+                                "Count, read and write numbers up to 100",
+                                "Order numbers up to 100",
+                                "Find patterns in number charts",
+                                "Use number line effectively"
+                            ],
+                            key_concepts=["Hundred", "Number chart", "Ordering", "Number patterns"],
+                            prerequisites=["Place value understanding"],
+                            difficulty_level="intermediate",
+                            estimated_hours=10,
+                            assessment_type=["written", "pattern-recognition"]
                         )
                     ],
-                    learning_outcomes=["Understand place value concept"],
-                    skills_developed=["Logical thinking", "Number sense"]
+                    learning_outcomes=["Master 2-digit number system with place value understanding"],
+                    skills_developed=["Number sense", "Place value concepts", "Logical thinking"]
+                ),
+                CurriculumChapter(
+                    chapter_number=2,
+                    chapter_name="Addition and Subtraction",
+                    topics=[
+                        CurriculumTopic(
+                            code="M2-2-1",
+                            name="Addition without Regrouping",
+                            chapter="Addition and Subtraction",
+                            learning_objectives=[
+                                "Add 2-digit numbers without regrouping",
+                                "Use column addition method",
+                                "Solve addition word problems",
+                                "Estimate sums"
+                            ],
+                            key_concepts=["Column addition", "No regrouping", "Word problems", "Estimation"],
+                            prerequisites=["Place value", "Addition facts"],
+                            difficulty_level="intermediate",
+                            estimated_hours=12,
+                            assessment_type=["written", "problem-solving"]
+                        ),
+                        CurriculumTopic(
+                            code="M2-2-2",
+                            name="Addition with Regrouping",
+                            chapter="Addition and Subtraction",
+                            learning_objectives=[
+                                "Add 2-digit numbers with regrouping",
+                                "Understand carrying in addition",
+                                "Apply regrouping in word problems",
+                                "Check addition answers"
+                            ],
+                            key_concepts=["Regrouping", "Carrying", "Column addition", "Verification"],
+                            prerequisites=["Addition without regrouping"],
+                            difficulty_level="intermediate",
+                            estimated_hours=14,
+                            assessment_type=["written", "step-by-step", "problem-solving"]
+                        ),
+                        CurriculumTopic(
+                            code="M2-2-3",
+                            name="Subtraction without Regrouping",
+                            chapter="Addition and Subtraction",
+                            learning_objectives=[
+                                "Subtract 2-digit numbers without regrouping",
+                                "Use column subtraction method",
+                                "Solve subtraction word problems",
+                                "Relate addition and subtraction"
+                            ],
+                            key_concepts=["Column subtraction", "No regrouping", "Inverse operations"],
+                            prerequisites=["Place value", "Subtraction facts"],
+                            difficulty_level="intermediate",
+                            estimated_hours=12,
+                            assessment_type=["written", "problem-solving"]
+                        ),
+                        CurriculumTopic(
+                            code="M2-2-4",
+                            name="Subtraction with Regrouping",
+                            chapter="Addition and Subtraction",
+                            learning_objectives=[
+                                "Subtract 2-digit numbers with regrouping",
+                                "Understand borrowing in subtraction",
+                                "Apply regrouping in word problems",
+                                "Check subtraction answers"
+                            ],
+                            key_concepts=["Regrouping", "Borrowing", "Column subtraction", "Verification"],
+                            prerequisites=["Subtraction without regrouping"],
+                            difficulty_level="advanced",
+                            estimated_hours=14,
+                            assessment_type=["written", "step-by-step", "problem-solving"]
+                        )
+                    ],
+                    learning_outcomes=["Master addition and subtraction of 2-digit numbers"],
+                    skills_developed=["Computational skills", "Problem solving", "Mathematical reasoning"]
+                ),
+                CurriculumChapter(
+                    chapter_number=3,
+                    chapter_name="Introduction to Multiplication",
+                    topics=[
+                        CurriculumTopic(
+                            code="M2-3-1",
+                            name="Multiplication as Repeated Addition",
+                            chapter="Introduction to Multiplication",
+                            learning_objectives=[
+                                "Understand multiplication as repeated addition",
+                                "Use arrays to show multiplication",
+                                "Write multiplication sentences",
+                                "Solve simple multiplication problems"
+                            ],
+                            key_concepts=["Repeated addition", "Arrays", "Multiplication sign", "Groups"],
+                            prerequisites=["Addition skills", "Skip counting"],
+                            difficulty_level="intermediate",
+                            estimated_hours=10,
+                            assessment_type=["practical", "visual", "written"]
+                        ),
+                        CurriculumTopic(
+                            code="M2-3-2",
+                            name="Multiplication Tables 2, 5, 10",
+                            chapter="Introduction to Multiplication",
+                            learning_objectives=[
+                                "Learn and recite tables of 2, 5, and 10",
+                                "Apply multiplication tables",
+                                "Find patterns in multiplication tables",
+                                "Use tables to solve problems"
+                            ],
+                            key_concepts=["Multiplication tables", "Patterns", "Skip counting", "Facts"],
+                            prerequisites=["Multiplication concept"],
+                            difficulty_level="intermediate",
+                            estimated_hours=12,
+                            assessment_type=["oral", "written", "pattern-recognition"]
+                        )
+                    ],
+                    learning_outcomes=["Understand multiplication concept and basic tables"],
+                    skills_developed=["Pattern recognition", "Memory skills", "Computational fluency"]
+                ),
+                CurriculumChapter(
+                    chapter_number=4,
+                    chapter_name="Measurement",
+                    topics=[
+                        CurriculumTopic(
+                            code="M2-4-1",
+                            name="Length Measurement",
+                            chapter="Measurement",
+                            learning_objectives=[
+                                "Measure length using non-standard units",
+                                "Introduction to standard units (cm, m)",
+                                "Compare lengths of objects",
+                                "Estimate lengths"
+                            ],
+                            key_concepts=["Length", "Centimeter", "Meter", "Measurement", "Estimation"],
+                            prerequisites=["Number comparison"],
+                            difficulty_level="intermediate",
+                            estimated_hours=10,
+                            assessment_type=["practical", "hands-on", "measurement"]
+                        ),
+                        CurriculumTopic(
+                            code="M2-4-2",
+                            name="Weight and Capacity",
+                            chapter="Measurement",
+                            learning_objectives=[
+                                "Compare weights of objects (heavy/light)",
+                                "Introduction to kilogram",
+                                "Compare capacity (more/less)",
+                                "Introduction to litre"
+                            ],
+                            key_concepts=["Weight", "Heavy", "Light", "Kilogram", "Capacity", "Litre"],
+                            prerequisites=["Comparison concepts"],
+                            difficulty_level="intermediate",
+                            estimated_hours=10,
+                            assessment_type=["practical", "hands-on", "comparison"]
+                        )
+                    ],
+                    learning_outcomes=["Basic understanding of measurement concepts"],
+                    skills_developed=["Practical measurement", "Estimation", "Comparison skills"]
+                ),
+                CurriculumChapter(
+                    chapter_number=5,
+                    chapter_name="Data Handling and Time",
+                    topics=[
+                        CurriculumTopic(
+                            code="M2-5-1",
+                            name="Simple Data Collection",
+                            chapter="Data Handling and Time",
+                            learning_objectives=[
+                                "Collect simple data through surveys",
+                                "Organize data in tables",
+                                "Create simple pictographs",
+                                "Interpret pictographs"
+                            ],
+                            key_concepts=["Data collection", "Tables", "Pictographs", "Interpretation"],
+                            prerequisites=["Counting skills", "Basic addition"],
+                            difficulty_level="intermediate",
+                            estimated_hours=8,
+                            assessment_type=["project", "practical", "creation"]
+                        ),
+                        CurriculumTopic(
+                            code="M2-5-2",
+                            name="Time - Hours and Half Hours",
+                            chapter="Data Handling and Time",
+                            learning_objectives=[
+                                "Read time to the hour and half hour",
+                                "Understand AM and PM",
+                                "Sequence daily activities by time",
+                                "Solve simple time problems"
+                            ],
+                            key_concepts=["Clock", "Hour", "Half hour", "AM", "PM", "Time sequence"],
+                            prerequisites=["Numbers 1-12", "Basic time concepts"],
+                            difficulty_level="intermediate",
+                            estimated_hours=10,
+                            assessment_type=["practical", "clock-reading", "problem-solving"]
+                        )
+                    ],
+                    learning_outcomes=["Handle simple data and understand time concepts"],
+                    skills_developed=["Data organization", "Time management", "Analytical thinking"]
                 )
             ],
-            yearly_learning_outcomes=["Work with numbers up to 999", "Basic operations", "Measurement concepts"],
+            yearly_learning_outcomes=[
+                "Master 2-digit numbers with place value understanding",
+                "Perform addition and subtraction with regrouping",
+                "Understand basic multiplication concepts",
+                "Apply measurement and time concepts in daily life"
+            ],
             assessment_pattern={
-                "formative": "40%",
-                "summative": "60%",
-                "practical": "Integrated"
+                "formative": "50%",
+                "summative": "50%",
+                "practical": "40%",
+                "problem-solving": "30%"
             }
         )
 
@@ -1186,7 +1571,7 @@ class CBSECurriculum:
             return []
 
     def _get_science_grade_1(self) -> SubjectCurriculum:
-        """Science curriculum for Grade 1"""
+        """Enhanced Science curriculum for Grade 1 - Complete Coverage"""
         return SubjectCurriculum(
             subject=Subject.SCIENCE,
             grade=1,
@@ -1200,57 +1585,368 @@ class CBSECurriculum:
                             name="Living Things Around Us",
                             chapter="Living and Non-Living",
                             learning_objectives=[
-                                "Identify living things",
-                                "Understand basic needs of living things",
-                                "Distinguish between living and non-living"
+                                "Identify living things in environment",
+                                "Understand basic characteristics of living things",
+                                "Distinguish between living and non-living things",
+                                "Observe growth and movement in living things"
                             ],
-                            key_concepts=["Living", "Non-living", "Growth", "Movement"],
+                            key_concepts=["Living", "Non-living", "Growth", "Movement", "Breathing", "Eating"],
                             prerequisites=["Basic observation skills"],
                             difficulty_level="beginner",
+                            estimated_hours=12,
+                            assessment_type=["oral", "practical", "drawing", "identification"]
+                        ),
+                        CurriculumTopic(
+                            code="S1-1-2",
+                            name="Non-Living Things Around Us",
+                            chapter="Living and Non-Living",
+                            learning_objectives=[
+                                "Identify non-living things in environment",
+                                "Understand properties of non-living things",
+                                "Compare living and non-living things",
+                                "Classify objects as living or non-living"
+                            ],
+                            key_concepts=["Non-living", "Properties", "Classification", "Materials"],
+                            prerequisites=["Living things identification"],
+                            difficulty_level="beginner",
                             estimated_hours=10,
-                            assessment_type=["oral", "practical", "drawing"]
+                            assessment_type=["classification", "practical", "oral"]
                         )
                     ],
-                    learning_outcomes=["Understand basic life concepts"],
-                    skills_developed=["Observation", "Classification"]
+                    learning_outcomes=["Distinguish between living and non-living things effectively"],
+                    skills_developed=["Observation", "Classification", "Comparison"]
+                ),
+                CurriculumChapter(
+                    chapter_number=2,
+                    chapter_name="Plants Around Us",
+                    topics=[
+                        CurriculumTopic(
+                            code="S1-2-1",
+                            name="Different Types of Plants",
+                            chapter="Plants Around Us",
+                            learning_objectives=[
+                                "Identify different types of plants (trees, shrubs, herbs)",
+                                "Observe plant parts (roots, stem, leaves, flowers)",
+                                "Recognize plants in the environment",
+                                "Understand plants are living things"
+                            ],
+                            key_concepts=["Trees", "Shrubs", "Herbs", "Plant parts", "Roots", "Stem", "Leaves"],
+                            prerequisites=["Living things concept"],
+                            difficulty_level="beginner",
+                            estimated_hours=12,
+                            assessment_type=["identification", "drawing", "practical"]
+                        )
+                    ],
+                    learning_outcomes=["Identify and classify different types of plants"],
+                    skills_developed=["Plant identification", "Observation", "Drawing"]
+                ),
+                CurriculumChapter(
+                    chapter_number=3,
+                    chapter_name="Animals Around Us",
+                    topics=[
+                        CurriculumTopic(
+                            code="S1-3-1",
+                            name="Animals in Our Environment",
+                            chapter="Animals Around Us",
+                            learning_objectives=[
+                                "Identify domestic and wild animals",
+                                "Understand animal sounds and movements",
+                                "Learn about animal homes",
+                                "Recognize baby animals and their parents"
+                            ],
+                            key_concepts=["Domestic animals", "Wild animals", "Animal sounds", "Animal homes", "Baby animals"],
+                            prerequisites=["Living things concept"],
+                            difficulty_level="beginner",
+                            estimated_hours=12,
+                            assessment_type=["identification", "matching", "oral", "drawing"]
+                        )
+                    ],
+                    learning_outcomes=["Recognize and classify animals in environment"],
+                    skills_developed=["Animal identification", "Sound recognition", "Observation"]
+                ),
+                CurriculumChapter(
+                    chapter_number=4,
+                    chapter_name="My Body",
+                    topics=[
+                        CurriculumTopic(
+                            code="S1-4-1",
+                            name="Parts of My Body",
+                            chapter="My Body",
+                            learning_objectives=[
+                                "Identify major body parts",
+                                "Understand functions of body parts",
+                                "Learn about five sense organs",
+                                "Practice good hygiene habits"
+                            ],
+                            key_concepts=["Body parts", "Head", "Arms", "Legs", "Sense organs", "Eyes", "Ears", "Nose"],
+                            prerequisites=["Basic self-awareness"],
+                            difficulty_level="beginner",
+                            estimated_hours=10,
+                            assessment_type=["identification", "practical", "hygiene-demo"]
+                        )
+                    ],
+                    learning_outcomes=["Identify body parts and understand their basic functions"],
+                    skills_developed=["Self-awareness", "Health consciousness", "Body coordination"]
+                ),
+                CurriculumChapter(
+                    chapter_number=5,
+                    chapter_name="Food and Water",
+                    topics=[
+                        CurriculumTopic(
+                            code="S1-5-1",
+                            name="Food We Eat",
+                            chapter="Food and Water",
+                            learning_objectives=[
+                                "Identify different types of food",
+                                "Understand healthy and unhealthy food",
+                                "Learn about food from plants and animals",
+                                "Practice good eating habits"
+                            ],
+                            key_concepts=["Healthy food", "Unhealthy food", "Plant food", "Animal food", "Nutrition"],
+                            prerequisites=["Plants and animals concepts"],
+                            difficulty_level="beginner",
+                            estimated_hours=10,
+                            assessment_type=["identification", "classification", "practical"]
+                        ),
+                        CurriculumTopic(
+                            code="S1-5-2",
+                            name="Water and Its Uses",
+                            chapter="Food and Water",
+                            learning_objectives=[
+                                "Understand importance of water",
+                                "Learn different uses of water",
+                                "Identify sources of water",
+                                "Practice water conservation"
+                            ],
+                            key_concepts=["Water uses", "Water sources", "Clean water", "Water conservation"],
+                            prerequisites=["Basic water awareness"],
+                            difficulty_level="beginner",
+                            estimated_hours=8,
+                            assessment_type=["practical", "demonstration", "oral"]
+                        )
+                    ],
+                    learning_outcomes=["Understand importance of food and water for life"],
+                    skills_developed=["Health awareness", "Conservation mindset", "Practical life skills"]
                 )
             ],
-            yearly_learning_outcomes=["Basic life science awareness"],
-            assessment_pattern={"formative": "70%", "summative": "30%", "practical": "50%"}
+            yearly_learning_outcomes=[
+                "Distinguish between living and non-living things",
+                "Identify plants and animals in environment",
+                "Know basic body parts and their functions", 
+                "Understand importance of food and water"
+            ],
+            assessment_pattern={
+                "formative": "60%",
+                "summative": "40%",
+                "practical": "50%",
+                "oral": "30%"
+            }
         )
 
     def _get_science_grade_2(self) -> SubjectCurriculum:
-        """Science curriculum for Grade 2"""
+        """Enhanced Science curriculum for Grade 2 - Complete Coverage"""
         return SubjectCurriculum(
             subject=Subject.SCIENCE,
             grade=2,
             chapters=[
                 CurriculumChapter(
                     chapter_number=1,
-                    chapter_name="Plants Around Us",
+                    chapter_name="Plants and Their Parts",
                     topics=[
                         CurriculumTopic(
                             code="S2-1-1",
-                            name="Different Types of Plants",
-                            chapter="Plants Around Us",
+                            name="Parts of a Plant",
+                            chapter="Plants and Their Parts",
                             learning_objectives=[
-                                "Identify different plants",
-                                "Understand plant parts",
-                                "Learn about plant uses"
+                                "Identify and name parts of a plant",
+                                "Understand functions of different plant parts",
+                                "Observe how plants grow",
+                                "Learn about seed germination"
                             ],
-                            key_concepts=["Plants", "Leaves", "Flowers", "Fruits"],
-                            prerequisites=["Basic observation"],
+                            key_concepts=["Roots", "Stem", "Leaves", "Flowers", "Fruits", "Seeds", "Germination"],
+                            prerequisites=["Basic plant identification"],
                             difficulty_level="beginner",
                             estimated_hours=12,
-                            assessment_type=["oral", "practical", "project"]
+                            assessment_type=["identification", "drawing", "practical", "observation"]
+                        ),
+                        CurriculumTopic(
+                            code="S2-1-2",
+                            name="How Plants Grow",
+                            chapter="Plants and Their Parts",
+                            learning_objectives=[
+                                "Understand what plants need to grow",
+                                "Observe plant growth from seed",
+                                "Learn about plant care",
+                                "Understand plants make their own food"
+                            ],
+                            key_concepts=["Sunlight", "Water", "Air", "Soil", "Growth", "Plant care"],
+                            prerequisites=["Plant parts knowledge"],
+                            difficulty_level="intermediate",
+                            estimated_hours=10,
+                            assessment_type=["experiment", "observation", "care-demo"]
                         )
                     ],
-                    learning_outcomes=["Basic plant knowledge"],
-                    skills_developed=["Observation", "Classification"]
+                    learning_outcomes=["Understand plant structure and growth requirements"],
+                    skills_developed=["Scientific observation", "Plant care", "Understanding life processes"]
+                ),
+                CurriculumChapter(
+                    chapter_number=2,
+                    chapter_name="Animals and Their Homes",
+                    topics=[
+                        CurriculumTopic(
+                            code="S2-2-1",
+                            name="Animal Families",
+                            chapter="Animals and Their Homes",
+                            learning_objectives=[
+                                "Learn about animal families (male, female, young ones)",
+                                "Understand animal behaviors",
+                                "Identify animals by their features",
+                                "Learn about animal movements"
+                            ],
+                            key_concepts=["Animal families", "Male", "Female", "Young ones", "Animal behaviors", "Features"],
+                            prerequisites=["Basic animal identification"],
+                            difficulty_level="beginner",
+                            estimated_hours=12,
+                            assessment_type=["matching", "identification", "oral"]
+                        ),
+                        CurriculumTopic(
+                            code="S2-2-2",
+                            name="Where Animals Live",
+                            chapter="Animals and Their Homes",
+                            learning_objectives=[
+                                "Identify different animal homes",
+                                "Understand why animals need homes",
+                                "Learn about land and water animals",
+                                "Match animals with their homes"
+                            ],
+                            key_concepts=["Animal homes", "Shelter", "Habitat", "Land animals", "Water animals"],
+                            prerequisites=["Animal identification"],
+                            difficulty_level="intermediate",
+                            estimated_hours=10,
+                            assessment_type=["matching", "classification", "practical"]
+                        )
+                    ],
+                    learning_outcomes=["Understand animal families and their living needs"],
+                    skills_developed=["Animal behavior understanding", "Habitat awareness", "Classification"]
+                ),
+                CurriculumChapter(
+                    chapter_number=3,
+                    chapter_name="Food and Health",
+                    topics=[
+                        CurriculumTopic(
+                            code="S2-3-1",
+                            name="Healthy Food Habits",
+                            chapter="Food and Health",
+                            learning_objectives=[
+                                "Learn about balanced diet",
+                                "Identify energy-giving and body-building foods",
+                                "Understand importance of fruits and vegetables",
+                                "Practice healthy eating habits"
+                            ],
+                            key_concepts=["Balanced diet", "Energy foods", "Body-building foods", "Vitamins", "Healthy habits"],
+                            prerequisites=["Basic food knowledge"],
+                            difficulty_level="intermediate",
+                            estimated_hours=10,
+                            assessment_type=["classification", "practical", "habit-tracking"]
+                        ),
+                        CurriculumTopic(
+                            code="S2-3-2",
+                            name="Keeping Our Body Clean",
+                            chapter="Food and Health",
+                            learning_objectives=[
+                                "Learn personal hygiene practices",
+                                "Understand importance of cleanliness",
+                                "Practice daily hygiene routines",
+                                "Learn about dental care"
+                            ],
+                            key_concepts=["Personal hygiene", "Cleanliness", "Bathing", "Dental care", "Hand washing"],
+                            prerequisites=["Body parts knowledge"],
+                            difficulty_level="beginner",
+                            estimated_hours=8,
+                            assessment_type=["demonstration", "practical", "routine-practice"]
+                        )
+                    ],
+                    learning_outcomes=["Develop healthy food and hygiene habits"],
+                    skills_developed=["Health consciousness", "Self-care", "Healthy lifestyle"]
+                ),
+                CurriculumChapter(
+                    chapter_number=4,
+                    chapter_name="Materials Around Us",
+                    topics=[
+                        CurriculumTopic(
+                            code="S2-4-1",
+                            name="Different Materials",
+                            chapter="Materials Around Us",
+                            learning_objectives=[
+                                "Identify different materials (wood, metal, plastic, cloth)",
+                                "Understand properties of materials",
+                                "Learn about uses of different materials",
+                                "Classify objects by material type"
+                            ],
+                            key_concepts=["Wood", "Metal", "Plastic", "Cloth", "Glass", "Material properties"],
+                            prerequisites=["Object identification"],
+                            difficulty_level="intermediate",
+                            estimated_hours=12,
+                            assessment_type=["classification", "identification", "property-testing"]
+                        )
+                    ],
+                    learning_outcomes=["Identify and classify materials by properties"],
+                    skills_developed=["Material identification", "Property observation", "Classification"]
+                ),
+                CurriculumChapter(
+                    chapter_number=5,
+                    chapter_name="Weather and Safety",
+                    topics=[
+                        CurriculumTopic(
+                            code="S2-5-1",
+                            name="Weather Changes",
+                            chapter="Weather and Safety",
+                            learning_objectives=[
+                                "Observe different weather conditions",
+                                "Understand sunny, rainy, windy weather",
+                                "Learn appropriate clothing for weather",
+                                "Understand seasons"
+                            ],
+                            key_concepts=["Weather", "Sunny", "Rainy", "Windy", "Cloudy", "Seasons", "Clothing"],
+                            prerequisites=["Basic observation skills"],
+                            difficulty_level="beginner",
+                            estimated_hours=10,
+                            assessment_type=["observation", "matching", "practical"]
+                        ),
+                        CurriculumTopic(
+                            code="S2-5-2",
+                            name="Staying Safe",
+                            chapter="Weather and Safety",
+                            learning_objectives=[
+                                "Learn basic safety rules",
+                                "Understand traffic safety",
+                                "Know emergency contact numbers",
+                                "Practice safety at home and school"
+                            ],
+                            key_concepts=["Safety rules", "Traffic safety", "Emergency", "Home safety", "School safety"],
+                            prerequisites=["Basic awareness"],
+                            difficulty_level="intermediate",
+                            estimated_hours=10,
+                            assessment_type=["role-play", "demonstration", "rule-practice"]
+                        )
+                    ],
+                    learning_outcomes=["Understand weather patterns and safety practices"],
+                    skills_developed=["Weather awareness", "Safety consciousness", "Emergency preparedness"]
                 )
             ],
-            yearly_learning_outcomes=["Plant life understanding"],
-            assessment_pattern={"formative": "60%", "summative": "40%", "practical": "40%"}
+            yearly_learning_outcomes=[
+                "Understand plant structure and growth needs",
+                "Learn about animal families and their homes", 
+                "Develop healthy food and hygiene habits",
+                "Identify materials and their properties",
+                "Understand weather changes and safety practices"
+            ],
+            assessment_pattern={
+                "formative": "55%",
+                "summative": "45%",
+                "practical": "45%", 
+                "observation": "25%"
+            }
         )
 
     def _get_social_studies_grade_1(self) -> SubjectCurriculum:

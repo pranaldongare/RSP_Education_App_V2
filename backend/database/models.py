@@ -9,13 +9,11 @@ from sqlalchemy import (
     Column, Integer, String, Text, DateTime, Float, Boolean, 
     ForeignKey, JSON, Index, UniqueConstraint
 )
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session
 from sqlalchemy.sql import func
 from datetime import datetime
 from typing import Optional, Dict, Any, List
-
-Base = declarative_base()
+from config.database import Base
 
 class UserSession(Base):
     """User session management for authentication"""
@@ -39,9 +37,9 @@ class UserSession(Base):
     student = relationship("Student", backref="sessions")
     
     __table_args__ = (
-        Index('idx_session_token', 'session_token'),
-        Index('idx_session_expires', 'expires_at'),
-        Index('idx_session_student', 'student_id'),
+        Index('idx_user_session_token', 'session_token'),
+        Index('idx_user_session_expires', 'expires_at'),
+        Index('idx_user_session_student', 'student_id'),
     )
 
 class Student(Base):
@@ -264,9 +262,9 @@ class LearningSession(Base):
     activities = relationship("SessionActivity", back_populates="session")
     
     __table_args__ = (
-        Index('idx_session_student', 'student_id'),
-        Index('idx_session_started', 'started_at'),
-        Index('idx_session_subject', 'subject'),
+        Index('idx_learning_session_student', 'student_id'),
+        Index('idx_learning_session_started', 'started_at'),
+        Index('idx_learning_session_subject', 'subject'),
     )
 
 class SessionActivity(Base):
