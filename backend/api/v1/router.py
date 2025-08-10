@@ -36,7 +36,7 @@ api_router.include_router(advanced_gamification_router)  # Advanced Gamification
 async def api_root():
     """API root endpoint"""
     return {
-        "message": "RSP Education Agent API v1 - Production Ready + Enhanced AI Companions + Advanced Analytics + Smart Notifications + Offline Support + Parent Dashboard + Collaborative Learning + Advanced Gamification",
+        "message": "RSP Education Agent API v1 - Production Ready + Enhanced AI Companion + Advanced Analytics + Smart Notifications + Offline Support + Parent Dashboard + Collaborative Learning + Advanced Gamification",
         "version": "2.7.0", 
         "description": "Complete AI tutoring system with 8 specialized agents + AI Companion + Advanced Analytics + Smart Notifications + Offline Mobile Support + Real-time Parent Monitoring + Collaborative Learning Features + Quest-based Learning & Virtual Rewards",
         "authentication": {
