@@ -3,7 +3,7 @@ Authentication Service - RSP Education Agent V2
 Handles user authentication, session management, and JWT token operations.
 """
 
-import jwt
+from jose import jwt
 import bcrypt
 import secrets
 from datetime import datetime, timedelta

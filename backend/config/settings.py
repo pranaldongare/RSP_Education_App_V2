@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Union
 from pydantic import Field, validator
 from pydantic_settings import BaseSettings
 
@@ -58,37 +58,38 @@ class Settings(BaseSettings):
     log_level: str = Field(default="INFO", env="LOG_LEVEL")
     log_format: str = Field(default="json", env="LOG_FORMAT")
     
-    # CORS
-    cors_origins: List[str] = Field(default=["*"], env="CORS_ORIGINS")
+    # CORS - Hardcoded for now to avoid pydantic parsing issues
+    _cors_origins_list: List[str] = ["http://localhost:3000", "http://localhost:80", "http://frontend:80"]
     
     # File Storage
-    upload_path: Path = Field(default=Path("uploads"), env="UPLOAD_PATH")
+    upload_path: Union[str, Path] = Field(default="uploads", env="UPLOAD_PATH")
     max_file_size: int = Field(default=10 * 1024 * 1024, env="MAX_FILE_SIZE")  # 10MB
     
     # Monitoring
     sentry_dsn: Optional[str] = Field(default=None, env="SENTRY_DSN")
     enable_metrics: bool = Field(default=True, env="ENABLE_METRICS")
     
-    @validator('cors_origins', pre=True)
-    def parse_cors_origins(cls, v):
-        if isinstance(v, str):
-            return [origin.strip() for origin in v.split(',')]
-        return v
+    @property
+    def cors_origins(self) -> List[str]:
+        """Return CORS origins list"""
+        return self._cors_origins_list
     
     @validator('upload_path', pre=True)
     def parse_upload_path(cls, v):
         if isinstance(v, str):
             return Path(v)
-        return v
+        return v if isinstance(v, Path) else Path("uploads")
     
     def create_upload_path(self):
         """Create upload directory if it doesn't exist"""
-        self.upload_path.mkdir(parents=True, exist_ok=True)
+        upload_path = Path(self.upload_path) if isinstance(self.upload_path, str) else self.upload_path
+        upload_path.mkdir(parents=True, exist_ok=True)
     
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = False
+        extra = "ignore"  # Allow extra fields from .env file
 
 
 # Global settings instance
