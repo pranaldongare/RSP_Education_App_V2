@@ -148,7 +148,8 @@ class AuthService:
                 student_id=student_id,
                 session_token=access_token,
                 refresh_token=refresh_token,
-                expires_at=datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES),
+                # Use refresh token lifespan for session expiry to allow token refresh
+                expires_at=datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS),
                 user_agent=user_agent,
                 ip_address=ip_address,
                 device_type="web"
