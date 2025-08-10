@@ -8,7 +8,7 @@ import asyncio
 import json
 import sys
 import time
-import requests
+import httpx
 sys.path.append('.')
 
 from agents.content_generator import ContentGeneratorAgent, ContentRequest
@@ -38,7 +38,8 @@ class APIEndpointTester:
         }
         
         try:
-            register_response = requests.post(f"{self.base_url}/api/v1/auth/register", json=register_data)
+            async with httpx.AsyncClient() as client:
+                register_response = await client.post(f"{self.base_url}/api/v1/auth/register", json=register_data)
             if register_response.status_code == 201:
                 print("SUCCESS: Test user registered successfully")
             elif register_response.status_code == 400:
@@ -53,7 +54,8 @@ class APIEndpointTester:
         }
         
         try:
-            login_response = requests.post(f"{self.base_url}/api/v1/auth/login", json=login_data)
+            async with httpx.AsyncClient() as client:
+                login_response = await client.post(f"{self.base_url}/api/v1/auth/login", json=login_data)
             if login_response.status_code == 200:
                 login_result = login_response.json()
                 self.access_token = login_result.get("access_token")
@@ -111,20 +113,21 @@ class APIEndpointTester:
                 'Authorization': f'Bearer {self.access_token}',
                 'Content-Type': 'application/json'
             }
-            
-            response = requests.post(
-                f"{self.base_url}/api/v1/agents/content-generator",
-                json=test_request,
-                headers=headers,
-                timeout=30
-            )
-            
+
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    f"{self.base_url}/api/v1/agents/content-generator",
+                    json=test_request,
+                    headers=headers,
+                    timeout=30,
+                )
+
             end_time = time.time()
-            
+
             if response.status_code == 200:
                 result_data = response.json()
                 content_data = result_data.get('content', {})
-                
+
                 return {
                     'success': True,
                     'response_time': end_time - start_time,
@@ -134,21 +137,21 @@ class APIEndpointTester:
                     'estimated_time': content_data.get('estimated_time', 0),
                     'prerequisites_count': len(content_data.get('prerequisites', [])),
                     'result_type': 'API JSON response',
-                    'status_code': response.status_code
+                    'status_code': response.status_code,
                 }
             else:
                 return {
                     'success': False,
                     'error': f"HTTP {response.status_code}: {response.text[:200]}",
                     'response_time': end_time - start_time,
-                    'status_code': response.status_code
+                    'status_code': response.status_code,
                 }
         except Exception as e:
             end_time = time.time()
             return {
                 'success': False,
                 'error': str(e),
-                'response_time': end_time - start_time
+                'response_time': end_time - start_time,
             }
     
     async def run_comparison_test(self):
