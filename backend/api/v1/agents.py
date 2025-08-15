@@ -9,7 +9,7 @@ from typing import Dict, List, Any, Optional
 from datetime import datetime
 import logging
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from agents.content_generator import ContentGeneratorAgent, ContentRequest, QuestionRequest
 from agents.assessment_agent import AssessmentAgent, AssessmentRequest
@@ -25,7 +25,7 @@ from agents.voice_interaction_agent import (
     VoiceGender
 )
 from core.exceptions import AgentException
-from database.database import get_db
+from config.database import get_db_session as get_db
 from database.models import Student
 from auth.auth_service import auth_service
 from services.ai_companion_service import ai_companion_agent
@@ -48,7 +48,7 @@ logger = logging.getLogger(__name__)
 # Authentication dependency
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ) -> Student:
     """Dependency to get current authenticated user"""
     try:

@@ -8,7 +8,8 @@ import bcrypt
 import secrets
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, Tuple
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel, EmailStr, Field
 import logging
@@ -107,12 +108,14 @@ class AuthService:
             self.logger.warning(f"Invalid token: {e}")
             return None
     
-    async def register_user(self, db: Session, registration: UserRegistration, 
+    async def register_user(self, db: AsyncSession, registration: UserRegistration, 
                           user_agent: str = None, ip_address: str = None) -> TokenResponse:
         """Register a new user"""
         try:
             # Check if email already exists
-            existing_user = db.query(Student).filter(Student.email == registration.email).first()
+            stmt = select(Student).where(Student.email == registration.email)
+            result = await db.execute(stmt)
+            existing_user = result.scalar_one_or_none()
             if existing_user:
                 raise AgentException("Email already registered")
             
@@ -137,7 +140,8 @@ class AuthService:
             )
             
             db.add(new_student)
-            db.commit()
+            await db.commit()
+            await db.refresh(new_student)
             
             # Create session tokens
             access_token = self.create_jwt_token(student_id, "access")
@@ -156,7 +160,7 @@ class AuthService:
             )
             
             db.add(session)
-            db.commit()
+            await db.commit()
             
             self.logger.info(f"User registered successfully: {student_id}")
             
@@ -174,20 +178,22 @@ class AuthService:
             )
             
         except IntegrityError as e:
-            db.rollback()
+            await db.rollback()
             self.logger.error(f"Database integrity error during registration: {e}")
             raise AgentException("Registration failed due to data conflict")
         except Exception as e:
-            db.rollback()
+            await db.rollback()
             self.logger.error(f"Registration error: {e}")
             raise AgentException(f"Registration failed: {str(e)}")
     
-    async def login_user(self, db: Session, login: UserLogin, 
+    async def login_user(self, db: AsyncSession, login: UserLogin, 
                         user_agent: str = None, ip_address: str = None) -> TokenResponse:
         """Authenticate and login user"""
         try:
             # Find user by email
-            user = db.query(Student).filter(Student.email == login.email).first()
+            stmt = select(Student).where(Student.email == login.email)
+            result = await db.execute(stmt)
+            user = result.scalar_one_or_none()
             if not user or not user.is_active:
                 raise AgentException("Invalid email or password")
             
@@ -205,10 +211,12 @@ class AuthService:
             
             # Deactivate old sessions if not remember_me
             if not login.remember_me:
-                db.query(UserSession).filter(
+                from sqlalchemy import update
+                stmt = update(UserSession).where(
                     UserSession.student_id == user.id,
                     UserSession.is_active == True
-                ).update({"is_active": False})
+                ).values(is_active=False)
+                await db.execute(stmt)
             
             # Create new session
             expire_time = timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS if login.remember_me 
@@ -225,7 +233,7 @@ class AuthService:
             )
             
             db.add(session)
-            db.commit()
+            await db.commit()
             
             self.logger.info(f"User logged in successfully: {user.id}")
             
@@ -246,11 +254,11 @@ class AuthService:
         except AgentException:
             raise
         except Exception as e:
-            db.rollback()
+            await db.rollback()
             self.logger.error(f"Login error: {e}")
             raise AgentException(f"Login failed: {str(e)}")
     
-    async def refresh_token(self, db: Session, refresh_token: str) -> TokenResponse:
+    async def refresh_token(self, db: AsyncSession, refresh_token: str) -> TokenResponse:
         """Refresh access token using refresh token"""
         try:
             # Verify refresh token
@@ -261,17 +269,21 @@ class AuthService:
             student_id = payload.get("sub")
             
             # Find active session
-            session = db.query(UserSession).filter(
+            session_stmt = select(UserSession).where(
                 UserSession.refresh_token == refresh_token,
                 UserSession.is_active == True,
                 UserSession.expires_at > datetime.utcnow()
-            ).first()
+            )
+            session_result = await db.execute(session_stmt)
+            session = session_result.scalar_one_or_none()
             
             if not session:
                 raise AgentException("Session expired or invalid")
             
             # Get user info
-            user = db.query(Student).filter(Student.id == student_id).first()
+            user_stmt = select(Student).where(Student.id == student_id)
+            user_result = await db.execute(user_stmt)
+            user = user_result.scalar_one_or_none()
             if not user or not user.is_active:
                 raise AgentException("User not found or inactive")
             
@@ -285,7 +297,7 @@ class AuthService:
             session.expires_at = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
             session.last_accessed = datetime.utcnow()
             
-            db.commit()
+            await db.commit()
             
             return TokenResponse(
                 access_token=new_access_token,
@@ -306,18 +318,20 @@ class AuthService:
             self.logger.error(f"Token refresh error: {e}")
             raise AgentException(f"Token refresh failed: {str(e)}")
     
-    async def logout_user(self, db: Session, access_token: str) -> bool:
+    async def logout_user(self, db: AsyncSession, access_token: str) -> bool:
         """Logout user and invalidate session"""
         try:
             # Find and deactivate session
-            session = db.query(UserSession).filter(
+            session_stmt = select(UserSession).where(
                 UserSession.session_token == access_token,
                 UserSession.is_active == True
-            ).first()
+            )
+            session_result = await db.execute(session_stmt)
+            session = session_result.scalar_one_or_none()
             
             if session:
                 session.is_active = False
-                db.commit()
+                await db.commit()
                 self.logger.info(f"User logged out: {session.student_id}")
                 return True
             
@@ -327,7 +341,7 @@ class AuthService:
             self.logger.error(f"Logout error: {e}")
             return False
     
-    async def get_current_user(self, db: Session, access_token: str) -> Optional[Student]:
+    async def get_current_user(self, db: AsyncSession, access_token: str) -> Optional[Student]:
         """Get current user from access token"""
         try:
             # Verify token
@@ -338,25 +352,29 @@ class AuthService:
             student_id = payload.get("sub")
             
             # Verify active session
-            session = db.query(UserSession).filter(
+            session_stmt = select(UserSession).where(
                 UserSession.session_token == access_token,
                 UserSession.is_active == True,
                 UserSession.expires_at > datetime.utcnow()
-            ).first()
+            )
+            session_result = await db.execute(session_stmt)
+            session = session_result.scalar_one_or_none()
             
             if not session:
                 return None
             
             # Get user
-            user = db.query(Student).filter(
+            user_stmt = select(Student).where(
                 Student.id == student_id,
                 Student.is_active == True
-            ).first()
+            )
+            user_result = await db.execute(user_stmt)
+            user = user_result.scalar_one_or_none()
             
             if user:
                 # Update last accessed
                 session.last_accessed = datetime.utcnow()
-                db.commit()
+                await db.commit()
             
             return user
             

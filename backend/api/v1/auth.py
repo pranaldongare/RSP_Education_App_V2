@@ -5,12 +5,12 @@ Handles user registration, login, logout, and session management.
 
 from fastapi import APIRouter, HTTPException, Depends, Request, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Dict, Any
 from datetime import datetime
 import logging
 
-from database.database import get_db
+from config.database import get_db_session as get_db
 from database.models import Student
 from auth.auth_service import (
     auth_service, UserRegistration, UserLogin, TokenResponse
@@ -31,7 +31,7 @@ def get_client_info(request: Request) -> Dict[str, str]:
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ) -> Student:
     """Dependency to get current authenticated user"""
     try:
@@ -56,7 +56,7 @@ async def get_current_user(
 async def register_user(
     registration: UserRegistration,
     request: Request,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """Register a new user"""
     try:
@@ -77,11 +77,12 @@ async def register_user(
         logger.error(f"Registration error: {e}")
         raise HTTPException(status_code=500, detail="Registration failed")
 
+
 @router.post("/login", response_model=TokenResponse)
 async def login_user(
     login: UserLogin,
     request: Request,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """Login user and create session"""
     try:
@@ -105,7 +106,7 @@ async def login_user(
 @router.post("/refresh", response_model=TokenResponse)
 async def refresh_access_token(
     refresh_request: Dict[str, str],
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """Refresh access token using refresh token"""
     try:
@@ -127,7 +128,7 @@ async def refresh_access_token(
 async def logout_user(
     current_user: Student = Depends(get_current_user),
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """Logout user and invalidate session"""
     try:
@@ -171,7 +172,7 @@ async def get_current_user_info(
 async def update_user_profile(
     profile_update: Dict[str, Any],
     current_user: Student = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """Update user profile information"""
     try:
@@ -200,7 +201,7 @@ async def update_user_profile(
 @router.get("/sessions")
 async def get_user_sessions(
     current_user: Student = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """Get user's active sessions"""
     try:
@@ -232,7 +233,7 @@ async def get_user_sessions(
 async def revoke_session(
     session_id: int,
     current_user: Student = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """Revoke a specific session"""
     try:
@@ -263,7 +264,7 @@ async def revoke_session(
 async def change_password(
     password_change: Dict[str, str],
     current_user: Student = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db)
 ):
     """Change user password"""
     try:

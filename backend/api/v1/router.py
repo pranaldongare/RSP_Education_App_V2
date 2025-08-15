@@ -19,7 +19,7 @@ from api.v1.advanced_gamification import router as advanced_gamification_router
 # Create main API router
 api_router = APIRouter()
 
-# Include sub-routers
+# Include sub-routers - RESTORED after AsyncSession fixes
 api_router.include_router(auth_router)  # Authentication endpoints
 api_router.include_router(content_router)
 api_router.include_router(agents_router)  # All 7 AI agents endpoints

@@ -9,6 +9,12 @@ from typing import Dict, List, Optional, Any
 from datetime import datetime
 
 from agents.content_generator import ContentGeneratorAgent
+from agents.assessment_agent import AssessmentAgent
+from agents.adaptive_learning_agent import AdaptiveLearningAgent
+from agents.engagement_agent import EngagementAgent
+from agents.analytics_agent import AnalyticsAgent
+from agents.learning_coordinator_agent import LearningCoordinatorAgent
+from agents.voice_interaction_agent import VoiceInteractionAgent
 
 
 class AgentCoordinator:
@@ -26,17 +32,27 @@ class AgentCoordinator:
         try:
             self.logger.info("Initializing Agent Coordinator...")
             
-            # Initialize Content Generator Agent
+            # Initialize all 7 AI agents
             self.agents['content_generator'] = ContentGeneratorAgent()
             self.logger.info("Content Generator Agent initialized")
             
-            # TODO: Initialize other agents in future phases
-            # self.agents['assessment'] = AssessmentAgent()
-            # self.agents['adaptive_learning'] = AdaptiveLearningAgent()
-            # self.agents['engagement'] = EngagementAgent()
-            # self.agents['analytics'] = AnalyticsAgent()
-            # self.agents['voice_interaction'] = VoiceInteractionAgent()
-            # self.agents['learning_coordinator'] = LearningCoordinatorAgent()
+            self.agents['assessment'] = AssessmentAgent()
+            self.logger.info("Assessment Agent initialized")
+            
+            self.agents['adaptive_learning'] = AdaptiveLearningAgent()
+            self.logger.info("Adaptive Learning Agent initialized")
+            
+            self.agents['engagement'] = EngagementAgent()
+            self.logger.info("Engagement Agent initialized")
+            
+            self.agents['analytics'] = AnalyticsAgent()
+            self.logger.info("Analytics Agent initialized")
+            
+            self.agents['voice_interaction'] = VoiceInteractionAgent()
+            self.logger.info("Voice Interaction Agent initialized")
+            
+            self.agents['learning_coordinator'] = LearningCoordinatorAgent()
+            self.logger.info("Learning Coordinator Agent initialized")
             
             self.is_initialized = True
             self.logger.info("Agent Coordinator initialized successfully")

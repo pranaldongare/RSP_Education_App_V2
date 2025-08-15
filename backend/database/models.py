@@ -9,7 +9,7 @@ from sqlalchemy import (
     Column, Integer, String, Text, DateTime, Float, Boolean, 
     ForeignKey, JSON, Index, UniqueConstraint
 )
-from sqlalchemy.orm import relationship, Session
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from datetime import datetime
 from typing import Optional, Dict, Any, List

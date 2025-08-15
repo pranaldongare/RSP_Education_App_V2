@@ -48,7 +48,7 @@ services:
     container_name: rsp_education_backend
     environment:
       # Database Configuration
-      DATABASE_URL: postgresql://rsp_user:rsp_password@database:5432/rsp_education
+      DATABASE_URL: postgresql+asyncpg://rsp_user:rsp_password@database:5432/rsp_education
       REDIS_URL: redis://redis:6379/0
       
       # API Keys (replace with your actual keys)
